@@ -1,6 +1,7 @@
 
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.SynchronousQueue;
 
 class Main {
 
@@ -34,9 +35,10 @@ class Main {
 
     public static void main(String[] args) {
         int nmLines = 0;
+        long maxTimeDiff = 0;
         System.out.println("running...");
         FileMgr f = new FileMgr();
-        f.openDir("C:\\N4\\testdata\\log\\");
+        f.openDir("/pjh/");
         String s;
         Date lastDate = null;
         do {
@@ -51,14 +53,18 @@ class Main {
                 System.out.println(">>>>>>>> BAD SORT <<<<<<<<<<");
             if (lastDate == null)
                 lastDate = split.timestamp;
-            Long timeDiff =  split.timestamp.getTime() - lastDate.getTime();
+            long timeDiff =  split.timestamp.getTime() - lastDate.getTime();
             System.out.println("diff" + timeDiff + " ms");
+            maxTimeDiff = Math.max(maxTimeDiff, timeDiff);
+            if (maxTimeDiff > 1000)
+                System.out.println("Big timediff = " + timeDiff);
             lastDate = split.timestamp;
 
         }
         while (!s.isEmpty()) ;
 
         System.out.println("Number of lines = " + nmLines);
+        System.out.println("max time diff = " + maxTimeDiff + " ms");
     f.closeFile();
 
     }
